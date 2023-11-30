@@ -1,0 +1,15 @@
+Instructions shown when we create a new repo.
+
+  echo "# sometext" >> README.md
+  git init
+  git add README.md
+  git commit -m "first commit"
+  git branch -M main
+  git remote add origin git@github.com:<username>/<reponame>.git
+  git push -u origin main
+
+Note: If we already have a local repo which we are planning to upload
+to github.com, then just create bare repo, do not add any README.md or
+LICENSE files. Doing so gives errors later when we are trying to push
+saying repos heads do not match or use fast-forward or something like
+that.
