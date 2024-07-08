@@ -1,0 +1,86 @@
+I find that Inter font is a superb system ui font. However, for the default rendering, it is not legible enough for me (on my display); it is too crispy I guess and some characters, mostly 'i' is not clear. By chance I found that it looks superb (to me) when it has no hinting; that is, hintstyle set to 'hintnone'.
+
+However, if we use GUI setting application to change hinting, it changes for _all_ fonts, which is not what I want. I am on KDE (Kinoite to be precise) but probably same under GNOME as well.
+
+Since, most font configuration is under '/etc/fonts/conf.d', I checked files there to get some hints. I came up with following configuration.
+
+        <?xml version="1.0"?>
+        <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+        <fontconfig>
+                <description>Disable hinting for Inter fonts</description>
+        <!-- Inter does not look good on my display (1366x768) with hintslight.
+        Disabling from system settings affects all fonts. This file turns off
+        hinting only for Inter fonts. -->
+
+                <match target="font">
+                        <test name="family" compare="eq">
+                                <string>Inter</string>
+                        </test>
+                        <edit name="hintstyle" mode="assign">
+                                <const>hintnone</const>
+                        </edit>
+                </match>
+
+                <match target="font">
+                        <test name="family" compare="eq">
+                                <string>Inter Display</string>
+                        </test>
+                        <edit name="hintstyle" mode="assign">
+                                <const>hintnone</const>
+                        </edit>
+                </match>
+
+                <match target="font">
+                        <test name="family" compare="eq">
+                                <string>Inter Tight</string>
+                        </test>
+                        <edit name="hintstyle" mode="assign">
+                                <const>hintnone</const>
+                        </edit>
+                </match>
+
+        </fontconfig>
+
+I named the file '25-unhint-inter.conf', placed in '/etc/fonts/conf.avail' and created a symlink inside '/etc/fonts/conf.d/'. Ideally this should have worked. But it seems KDE's font setting overrides the configurations under '/etc/fonts/'. After little investigation, I noticed a 'fonts.conf' file under
+'~/.config/fontconfig/' and decided to append my Inter font hinting information in this file. To my surprise (and delight), this method worked.
+
+In case it may be helpful to somebody, my '~/.config/fontconfig/fonts.conf' file (under Fedora KDE desktop) is as below.
+
+        <?xml version='1.0'?>
+        <!DOCTYPE fontconfig SYSTEM 'urn:fontconfig:fonts.dtd'>
+        <fontconfig>
+        <!-- Fedora specific font tweaks ... Clipped as it may not
+            be useful on other distro (?!).
+            My settings is as below
+        -->
+
+        <!-- Set hinting to hintnone for Inter font family only -->
+
+                <match target="font">
+                        <test name="family" compare="eq">
+                                <string>Inter</string>
+                        </test>
+                        <edit name="hintstyle" mode="assign">
+                                <const>hintnone</const>
+                        </edit>
+                </match>
+
+                <match target="font">
+                        <test name="family" compare="eq">
+                                <string>Inter Display</string>
+                        </test>
+                        <edit name="hintstyle" mode="assign">
+                                <const>hintnone</const>
+                        </edit>
+                </match>
+
+                <match target="font">
+                        <test name="family" compare="eq">
+                                <string>Inter Tight</string>
+                        </test>
+                        <edit name="hintstyle" mode="assign">
+                                <const>hintnone</const>
+                        </edit>
+                </match>
+
+        </fontconfig>
